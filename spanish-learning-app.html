@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish Learning App - A1 to B1</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #764ba2;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #f0f0f0;
+        }
+
+        .content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+        .level-overview {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .level-title {
+            font-size: 2.5rem;
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .level-description {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .lesson-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .lesson-card.completed {
+            background: #e8f5e8;
+            border-color: #4caf50;
+        }
+
+        .lesson-card.current {
+            background: #fff3e0;
+            border-color: #ff9800;
+        }
+
+        .lesson-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .lesson-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .lesson-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .status-icon.completed {
+            background: #4caf50;
+        }
+
+        .status-icon.current {
+            background: #ff9800;
+        }
+
+        .status-icon.locked {
+            background: #ccc;
+        }
+
+        .exercise-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .exercise-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .exercise-title {
+            font-size: 2rem;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .exercise-progress {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .clickable-word {
+            cursor: pointer;
+            color: #667eea;
+            text-decoration: underline;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .clickable-word:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .word-definition {
+            position: fixed;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .definition-word {
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 8px;
+        }
+
+        .definition-text {
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-button {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .option-button:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option-button.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option-button.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .option-button.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-audio {
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+        }
+
+        .grammar-section {
+            background: #f0f4ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .grammar-title {
+            font-size: 1.5rem;
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .grammar-content {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .example-box {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .achievement-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .achievement-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .achievement-title {
+            font-size: 1.5rem;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .test-summary {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            color: #4caf50;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .app {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                width: 100%;
+            }
+
+            .lesson-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Comprehensive A1 Lesson data structure
+        const lessonData = {
+            A1: {
+                title: "Beginner (A1)",
+                description: "Master essential Spanish fundamentals with comprehensive vocabulary and grammar",
+                lessons: [
+                    {
+                        id: "a1-1",
+                        title: "Greetings & Basic Politeness",
+                        description: "Essential greetings, polite expressions, and first interactions",
+                        grammar: {
+                            title: "Formal vs Informal Greetings",
+                            content: "Spanish has different levels of formality. Use 'tú' for informal situations and 'usted' for formal ones.",
+                            examples: [
+                                { spanish: "Hola, ¿cómo estás?", english: "Hi, how are you? (informal)" },
+                                { spanish: "Buenos días, ¿cómo está usted?", english: "Good morning, how are you? (formal)" },
+                                { spanish: "Mucho gusto", english: "Nice to meet you" },
+                                { spanish: "Disculpe/Perdón", english: "Excuse me/Sorry" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'Good afternoon' in Spanish?",
+                                options: ["Buenos días", "Buenas tardes", "Buenas noches", "Buenas"],
+                                correct: 1,
+                                audio: "Buenas tardes"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "Complete the polite phrase: _____ gusto (Nice to meet you)",
+                                answer: "Mucho",
+                                audio: "Mucho gusto"
+                            },
+                            {
+                                type: "vocabulary",
+                                question: "Match the expressions:",
+                                pairs: [
+                                    { spanish: "Por favor", english: "Please" },
+                                    { spanish: "De nada", english: "You're welcome" },
+                                    { spanish: "Lo siento", english: "I'm sorry" },
+                                    { spanish: "Con permiso", english: "Excuse me (to pass)" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "What's the formal way to ask 'How are you?'",
+                                options: ["¿Cómo estás?", "¿Cómo está usted?", "¿Cómo te llamas?", "¿Qué tal?"],
+                                correct: 1,
+                                audio: "¿Cómo está usted?"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-2",
+                        title: "Personal Information & Introductions",
+                        description: "Names, age, nationality, and basic personal details",
+                        grammar: {
+                            title: "Ser vs Estar - Basic Introduction",
+                            content: "'Ser' is used for permanent characteristics like name, nationality, profession. 'Estar' is for temporary states and locations.",
+                            examples: [
+                                { spanish: "Soy Ana", english: "I am Ana" },
+                                { spanish: "Soy de España", english: "I am from Spain" },
+                                { spanish: "Tengo 25 años", english: "I am 25 years old" },
+                                { spanish: "Estoy bien", english: "I am well" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "fill-blank",
+                                question: "I am from Mexico: _____ de México",
+                                answer: "Soy",
+                                audio: "Soy de México"
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'I am 30 years old'?",
+                                options: ["Soy 30 años", "Tengo 30 años", "Estoy 30 años", "Es 30 años"],
+                                correct: 1,
+                                audio: "Tengo 30 años"
+                            },
+                            {
+                                type: "vocabulary",
+                                question: "Match personal information questions:",
+                                pairs: [
+                                    { spanish: "¿Cómo te llamas?", english: "What's your name?" },
+                                    { spanish: "¿De dónde eres?", english: "Where are you from?" },
+                                    { spanish: "¿Cuántos años tienes?", english: "How old are you?" },
+                                    { spanish: "¿Dónde vives?", english: "Where do you live?" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-3",
+                        title: "Numbers 0-100",
+                        description: "Complete number system from zero to one hundred",
+                        grammar: {
+                            title: "Spanish Number System",
+                            content: "Spanish numbers have patterns: 21-29 add 'i' (veintiuno), 30+ use 'y' (treinta y uno).",
+                            examples: [
+                                { spanish: "cero, uno, dos, tres", english: "zero, one, two, three" },
+                                { spanish: "veinte, veintiuno, veintidós", english: "twenty, twenty-one, twenty-two" },
+                                { spanish: "treinta y cinco", english: "thirty-five" },
+                                { spanish: "cien", english: "one hundred" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "multiple-choice",
+                                question: "What is 'fifteen' in Spanish?",
+                                options: ["catorce", "quince", "dieciséis", "cincuenta"],
+                                correct: 1,
+                                audio: "quince"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "Write: 67 = sesenta y _____",
+                                answer: "siete",
+                                audio: "sesenta y siete"
+                            },
+                            {
+                                type: "vocabulary",
+                                question: "Match the numbers:",
+                                pairs: [
+                                    { spanish: "cuarenta", english: "forty" },
+                                    { spanish: "ochenta", english: "eighty" },
+                                    { spanish: "noventa", english: "ninety" }
+                                ]
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "Complete: 21 = _____",
+                                answer: "veintiuno",
+                                audio: "veintiuno"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-4",
+                        title: "Days, Months & Time",
+                        description: "Calendar vocabulary and telling time",
+                        grammar: {
+                            title: "Time Expressions",
+                            content: "Use 'Es la' for 1:00, 'Son las' for other hours. Days and months are masculine and not capitalized.",
+                            examples: [
+                                { spanish: "Es la una", english: "It's one o'clock" },
+                                { spanish: "Son las tres y media", english: "It's three thirty" },
+                                { spanish: "el lunes, el martes", english: "Monday, Tuesday" },
+                                { spanish: "enero, febrero, marzo", english: "January, February, March" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match days of the week:",
+                                pairs: [
+                                    { spanish: "lunes", english: "Monday" },
+                                    { spanish: "miércoles", english: "Wednesday" },
+                                    { spanish: "viernes", english: "Friday" },
+                                    { spanish: "domingo", english: "Sunday" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'It's 2:15'?",
+                                options: ["Es las dos y cuarto", "Son las dos y cuarto", "Son dos y cuarto", "Es dos y cuarto"],
+                                correct: 1,
+                                audio: "Son las dos y cuarto"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "July in Spanish: _____",
+                                answer: "julio",
+                                audio: "julio"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-5",
+                        title: "Colors & Basic Descriptions",
+                        description: "Color vocabulary and simple adjective agreement",
+                        grammar: {
+                            title: "Adjective Agreement",
+                            content: "Adjectives must agree in gender and number with the noun they describe.",
+                            examples: [
+                                { spanish: "el coche rojo", english: "the red car" },
+                                { spanish: "la casa blanca", english: "the white house" },
+                                { spanish: "los zapatos negros", english: "the black shoes" },
+                                { spanish: "las flores amarillas", english: "the yellow flowers" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match the colors:",
+                                pairs: [
+                                    { spanish: "azul", english: "blue" },
+                                    { spanish: "verde", english: "green" },
+                                    { spanish: "naranja", english: "orange" },
+                                    { spanish: "morado", english: "purple" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "Which is correct for 'the red cars'?",
+                                options: ["los coches rojo", "los coches rojos", "el coche rojo", "las coches rojas"],
+                                correct: 1,
+                                audio: "los coches rojos"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "The white house: la casa _____",
+                                answer: "blanca",
+                                audio: "la casa blanca"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-6",
+                        title: "Family & Relationships",
+                        description: "Extended family vocabulary and relationship terms",
+                        grammar: {
+                            title: "Possessive Adjectives",
+                            content: "Possessive adjectives agree with the thing possessed, not the possessor.",
+                            examples: [
+                                { spanish: "mi padre, mi madre", english: "my father, my mother" },
+                                { spanish: "tu hermano, tus hermanos", english: "your brother, your brothers" },
+                                { spanish: "su familia", english: "his/her/your family" },
+                                { spanish: "nuestros hijos", english: "our children" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match family members:",
+                                pairs: [
+                                    { spanish: "primo/prima", english: "cousin" },
+                                    { spanish: "tío/tía", english: "uncle/aunt" },
+                                    { spanish: "nieto/nieta", english: "grandson/granddaughter" },
+                                    { spanish: "cuñado/cuñada", english: "brother-in-law/sister-in-law" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'our daughters'?",
+                                options: ["nuestra hijas", "nuestras hijas", "nuestro hijas", "nuestros hijas"],
+                                correct: 1,
+                                audio: "nuestras hijas"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "My grandparents: _____ abuelos",
+                                answer: "mis",
+                                audio: "mis abuelos"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-7",
+                        title: "Present Tense: Regular Verbs",
+                        description: "-AR, -ER, -IR verb conjugations in present tense",
+                        grammar: {
+                            title: "Regular Verb Conjugations",
+                            content: "Spanish verbs have three main groups: -ar (hablar), -er (comer), -ir (vivir). Each has specific endings.",
+                            examples: [
+                                { spanish: "Yo hablo español", english: "I speak Spanish" },
+                                { spanish: "Tú comes pizza", english: "You eat pizza" },
+                                { spanish: "Él vive en Madrid", english: "He lives in Madrid" },
+                                { spanish: "Nosotros estudiamos", english: "We study" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "fill-blank",
+                                question: "We speak: Nosotros _____",
+                                answer: "hablamos",
+                                audio: "Nosotros hablamos"
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'They live'?",
+                                options: ["ellos vivo", "ellos vive", "ellos viven", "ellos vivir"],
+                                correct: 2,
+                                audio: "ellos viven"
+                            },
+                            {
+                                type: "vocabulary",
+                                question: "Match verb conjugations:",
+                                pairs: [
+                                    { spanish: "yo estudio", english: "I study" },
+                                    { spanish: "tú trabajas", english: "you work" },
+                                    { spanish: "ella come", english: "she eats" },
+                                    { spanish: "nosotros escribimos", english: "we write" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-8",
+                        title: "Common Irregular Verbs",
+                        description: "Essential irregular verbs: ser, estar, tener, hacer",
+                        grammar: {
+                            title: "Key Irregular Verbs",
+                            content: "These verbs don't follow regular patterns but are essential for basic communication.",
+                            examples: [
+                                { spanish: "Soy estudiante", english: "I am a student" },
+                                { spanish: "Estás en casa", english: "You are at home" },
+                                { spanish: "Tiene un gato", english: "He/she has a cat" },
+                                { spanish: "Hacemos la tarea", english: "We do homework" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'We are tired'?",
+                                options: ["Somos cansados", "Estamos cansados", "Tenemos cansados", "Hacemos cansados"],
+                                correct: 1,
+                                audio: "Estamos cansados"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "I have a dog: _____ un perro",
+                                answer: "Tengo",
+                                audio: "Tengo un perro"
+                            },
+                            {
+                                type: "vocabulary",
+                                question: "Match the conjugations:",
+                                pairs: [
+                                    { spanish: "eres", english: "you are (permanent)" },
+                                    { spanish: "está", english: "he/she is (temporary)" },
+                                    { spanish: "tienen", english: "they have" },
+                                    { spanish: "hago", english: "I do/make" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-9",
+                        title: "House & Home Vocabulary",
+                        description: "Rooms, furniture, and household items",
+                        grammar: {
+                            title: "Hay (There is/There are)",
+                            content: "'Hay' means both 'there is' and 'there are'. Use it to describe what exists in a place.",
+                            examples: [
+                                { spanish: "Hay una cama en el dormitorio", english: "There is a bed in the bedroom" },
+                                { spanish: "Hay dos baños en la casa", english: "There are two bathrooms in the house" },
+                                { spanish: "No hay mesa en la cocina", english: "There is no table in the kitchen" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match home vocabulary:",
+                                pairs: [
+                                    { spanish: "cocina", english: "kitchen" },
+                                    { spanish: "dormitorio", english: "bedroom" },
+                                    { spanish: "sala de estar", english: "living room" },
+                                    { spanish: "baño", english: "bathroom" }
+                                ]
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "There are chairs: _____ sillas",
+                                answer: "Hay",
+                                audio: "Hay sillas"
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "What is 'refrigerator' in Spanish?",
+                                options: ["nevera", "mesa", "silla", "cama"],
+                                correct: 0,
+                                audio: "nevera"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-10",
+                        title: "Food & Drinks",
+                        description: "Basic food vocabulary and expressing preferences",
+                        grammar: {
+                            title: "Gustar - Expressing Likes",
+                            content: "'Gustar' works differently than English 'to like'. The thing liked is the subject.",
+                            examples: [
+                                { spanish: "Me gusta el café", english: "I like coffee" },
+                                { spanish: "Te gustan las frutas", english: "You like fruits" },
+                                { spanish: "No nos gusta la comida picante", english: "We don't like spicy food" },
+                                { spanish: "¿Te gusta cocinar?", english: "Do you like to cook?" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match food vocabulary:",
+                                pairs: [
+                                    { spanish: "pan", english: "bread" },
+                                    { spanish: "pollo", english: "chicken" },
+                                    { spanish: "verduras", english: "vegetables" },
+                                    { spanish: "pescado", english: "fish" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'I like apples'?",
+                                options: ["Me gusto manzanas", "Me gusta manzanas", "Me gustan manzanas", "Me gustan las manzanas"],
+                                correct: 3,
+                                audio: "Me gustan las manzanas"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "We like pizza: _____ gusta la pizza",
+                                answer: "Nos",
+                                audio: "Nos gusta la pizza"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-11",
+                        title: "Clothing & Shopping",
+                        description: "Clothing items, sizes, and basic shopping phrases",
+                        grammar: {
+                            title: "Demonstratives (This/That)",
+                            content: "Use 'este/esta' for 'this', 'ese/esa' for 'that (near you)', 'aquel/aquella' for 'that (far away)'.",
+                            examples: [
+                                { spanish: "esta camisa", english: "this shirt" },
+                                { spanish: "esos pantalones", english: "those pants" },
+                                { spanish: "aquellos zapatos", english: "those shoes (over there)" },
+                                { spanish: "¿Cuánto cuesta?", english: "How much does it cost?" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match clothing items:",
+                                pairs: [
+                                    { spanish: "camisa", english: "shirt" },
+                                    { spanish: "pantalones", english: "pants" },
+                                    { spanish: "zapatos", english: "shoes" },
+                                    { spanish: "chaqueta", english: "jacket" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'these dresses'?",
+                                options: ["este vestidos", "esta vestidos", "estos vestidos", "estas vestidos"],
+                                correct: 2,
+                                audio: "estos vestidos"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "How much does it cost?: ¿_____ cuesta?",
+                                answer: "Cuánto",
+                                audio: "¿Cuánto cuesta?"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-12",
+                        title: "Body Parts & Health",
+                        description: "Body vocabulary and expressing pain or discomfort",
+                        grammar: {
+                            title: "Doler (To Hurt) & Body Parts",
+                            content: "'Doler' works like 'gustar'. Use 'me duele' for singular and 'me duelen' for plural.",
+                            examples: [
+                                { spanish: "Me duele la cabeza", english: "My head hurts" },
+                                { spanish: "Te duelen los pies", english: "Your feet hurt" },
+                                { spanish: "Estoy enfermo/a", english: "I am sick" },
+                                { spanish: "¿Cómo te sientes?", english: "How do you feel?" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match body parts:",
+                                pairs: [
+                                    { spanish: "cabeza", english: "head" },
+                                    { spanish: "brazo", english: "arm" },
+                                    { spanish: "pierna", english: "leg" },
+                                    { spanish: "estómago", english: "stomach" }
+                                ]
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "My back hurts: Me duele la _____",
+                                answer: "espalda",
+                                audio: "Me duele la espalda"
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'My eyes hurt'?",
+                                options: ["Me duele los ojos", "Me duelen los ojos", "Me duele el ojo", "Me duelen el ojos"],
+                                correct: 1,
+                                audio: "Me duelen los ojos"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-13",
+                        title: "Weather & Seasons",
+                        description: "Weather conditions and seasonal vocabulary",
+                        grammar: {
+                            title: "Weather Expressions with Hacer",
+                            content: "Use 'hace' for most weather conditions. Some use 'hay' or specific verbs.",
+                            examples: [
+                                { spanish: "Hace calor", english: "It's hot" },
+                                { spanish: "Hace frío", english: "It's cold" },
+                                { spanish: "Llueve", english: "It's raining" },
+                                { spanish: "Está nublado", english: "It's cloudy" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match weather conditions:",
+                                pairs: [
+                                    { spanish: "sol", english: "sun" },
+                                    { spanish: "lluvia", english: "rain" },
+                                    { spanish: "nieve", english: "snow" },
+                                    { spanish: "viento", english: "wind" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'It's sunny'?",
+                                options: ["Hace sol", "Está sol", "Hay sol", "Es sol"],
+                                correct: 0,
+                                audio: "Hace sol"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "It's windy: Hace _____",
+                                answer: "viento",
+                                audio: "Hace viento"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-14",
+                        title: "Transportation",
+                        description: "Means of transport and basic travel vocabulary",
+                        grammar: {
+                            title: "Transportation Verbs",
+                            content: "Use different verbs with transportation: 'ir en' (go by), 'tomar' (take), 'conducir' (drive).",
+                            examples: [
+                                { spanish: "Voy en autobús", english: "I go by bus" },
+                                { spanish: "Tomo el metro", english: "I take the subway" },
+                                { spanish: "Conduzco un coche", english: "I drive a car" },
+                                { spanish: "Camino al trabajo", english: "I walk to work" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match transportation:",
+                                pairs: [
+                                    { spanish: "autobús", english: "bus" },
+                                    { spanish: "tren", english: "train" },
+                                    { spanish: "avión", english: "airplane" },
+                                    { spanish: "bicicleta", english: "bicycle" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'I take the train'?",
+                                options: ["Tomo el tren", "Voy el tren", "Hago el tren", "Soy el tren"],
+                                correct: 0,
+                                audio: "Tomo el tren"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "I go by car: Voy en _____",
+                                answer: "coche",
+                                audio: "Voy en coche"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-15",
+                        title: "Daily Routines",
+                        description: "Reflexive verbs and describing daily activities",
+                        grammar: {
+                            title: "Reflexive Verbs",
+                            content: "Reflexive verbs use pronouns (me, te, se, nos, se) and describe actions done to oneself.",
+                            examples: [
+                                { spanish: "Me levanto a las siete", english: "I get up at seven" },
+                                { spanish: "Te duchas por la mañana", english: "You shower in the morning" },
+                                { spanish: "Se acuesta tarde", english: "He/she goes to bed late" },
+                                { spanish: "Nos vestimos rápido", english: "We get dressed quickly" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match daily activities:",
+                                pairs: [
+                                    { spanish: "levantarse", english: "to get up" },
+                                    { spanish: "ducharse", english: "to shower" },
+                                    { spanish: "vestirse", english: "to get dressed" },
+                                    { spanish: "acostarse", english: "to go to bed" }
+                                ]
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "I brush my teeth: _____ lavo los dientes",
+                                answer: "Me",
+                                audio: "Me lavo los dientes"
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'We wake up early'?",
+                                options: ["Nos despertamos temprano", "Se despertamos temprano", "Me despertamos temprano", "Te despertamos temprano"],
+                                correct: 0,
+                                audio: "Nos despertamos temprano"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-16",
+                        title: "Questions & Negation",
+                        description: "Forming questions and negative sentences",
+                        grammar: {
+                            title: "Question Words & Negation",
+                            content: "Question words carry accents. Use 'no' before the verb for negation.",
+                            examples: [
+                                { spanish: "¿Qué haces?", english: "What are you doing?" },
+                                { spanish: "¿Dónde vives?", english: "Where do you live?" },
+                                { spanish: "No hablo francés", english: "I don't speak French" },
+                                { spanish: "¿Por qué estudias español?", english: "Why do you study Spanish?" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match question words:",
+                                pairs: [
+                                    { spanish: "¿Qué?", english: "What?" },
+                                    { spanish: "¿Cuándo?", english: "When?" },
+                                    { spanish: "¿Por qué?", english: "Why?" },
+                                    { spanish: "¿Cuánto?", english: "How much?" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "Which is the correct negative sentence?",
+                                options: ["Yo no como carne", "Yo come no carne", "No yo como carne", "Yo como carne no"],
+                                correct: 0,
+                                audio: "Yo no como carne"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "Where do you work?: ¿_____ trabajas?",
+                                answer: "Dónde",
+                                audio: "¿Dónde trabajas?"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-17",
+                        title: "Locations & Directions",
+                        description: "Places in the city and basic direction vocabulary",
+                        grammar: {
+                            title: "Prepositions of Place",
+                            content: "Learn key prepositions to describe location and give basic directions.",
+                            examples: [
+                                { spanish: "El banco está al lado del hotel", english: "The bank is next to the hotel" },
+                                { spanish: "La farmacia está enfrente de la escuela", english: "The pharmacy is across from the school" },
+                                { spanish: "Gire a la derecha", english: "Turn right" },
+                                { spanish: "Siga recto", english: "Go straight" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match places in the city:",
+                                pairs: [
+                                    { spanish: "banco", english: "bank" },
+                                    { spanish: "hospital", english: "hospital" },
+                                    { spanish: "supermercado", english: "supermarket" },
+                                    { spanish: "farmacia", english: "pharmacy" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'Turn left'?",
+                                options: ["Gire a la derecha", "Gire a la izquierda", "Siga recto", "Pare aquí"],
+                                correct: 1,
+                                audio: "Gire a la izquierda"
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "The store is near: La tienda está _____",
+                                answer: "cerca",
+                                audio: "La tienda está cerca"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a1-18",
+                        title: "Professions & Work",
+                        description: "Job vocabulary and workplace expressions",
+                        grammar: {
+                            title: "Profession Articles",
+                            content: "Professions usually don't use articles after 'ser', but use them in other contexts.",
+                            examples: [
+                                { spanish: "Soy médico", english: "I am a doctor" },
+                                { spanish: "El médico trabaja en el hospital", english: "The doctor works at the hospital" },
+                                { spanish: "Trabajo en una oficina", english: "I work in an office" },
+                                { spanish: "¿A qué te dedicas?", english: "What do you do for work?" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match professions:",
+                                pairs: [
+                                    { spanish: "profesor/profesora", english: "teacher" },
+                                    { spanish: "enfermero/enfermera", english: "nurse" },
+                                    { spanish: "cocinero/cocinera", english: "cook" },
+                                    { spanish: "policía", english: "police officer" }
+                                ]
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "I am a student: Soy _____",
+                                answer: "estudiante",
+                                audio: "Soy estudiante"
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "Where does a teacher work?",
+                                options: ["en el hospital", "en la escuela", "en el banco", "en la tienda"],
+                                correct: 1,
+                                audio: "en la escuela"
+                            }
+                        ]
+                    }
+                ]
+            },
+            A2: {
+                title: "Elementary (A2)",
+                description: "Build on your foundation with more complex grammar and vocabulary",
+                lessons: [
+                    {
+                        id: "a2-1",
+                        title: "Present Tense Verbs",
+                        description: "Learn regular verb conjugations in present tense",
+                        grammar: {
+                            title: "Present Tense - Regular Verbs",
+                            content: "Spanish verbs end in -ar, -er, or -ir and follow regular conjugation patterns.",
+                            examples: [
+                                { spanish: "hablar: hablo, hablas, habla", english: "to speak: I speak, you speak, he/she speaks" },
+                                { spanish: "comer: como, comes, come", english: "to eat: I eat, you eat, he/she eats" },
+                                { spanish: "vivir: vivo, vives, vive", english: "to live: I live, you live, he/she lives" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "fill-blank",
+                                question: "I speak Spanish: Yo _____ español",
+                                answer: "hablo",
+                                audio: "Yo hablo español"
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'She lives'?",
+                                options: ["ella vive", "ella vivo", "ella vives", "ella vivir"],
+                                correct: 0,
+                                audio: "ella vive"
+                            }
+                        ]
+                    },
+                    {
+                        id: "a2-2",
+                        title: "Food & Drinks",
+                        description: "Vocabulary for ordering food and describing meals",
+                        grammar: {
+                            title: "Food Vocabulary & Articles",
+                            content: "Food items use definite articles (el/la) and many have gender.",
+                            examples: [
+                                { spanish: "el pan, la leche", english: "bread, milk" },
+                                { spanish: "Me gusta la pizza", english: "I like pizza" },
+                                { spanish: "Quiero agua, por favor", english: "I want water, please" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match the food items:",
+                                pairs: [
+                                    { spanish: "pan", english: "bread" },
+                                    { spanish: "agua", english: "water" },
+                                    { spanish: "pollo", english: "chicken" }
+                                ]
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'I like coffee'?",
+                                options: ["Me gusta café", "Me gusto café", "Me gustas café", "Me gustan café"],
+                                correct: 0,
+                                audio: "Me gusta café"
+                            }
+                        ]
+                    }
+                ]
+            },
+            B1: {
+                title: "Intermediate (B1)",
+                description: "Express yourself with confidence using advanced grammar and vocabulary",
+                lessons: [
+                    {
+                        id: "b1-1",
+                        title: "Past Tense (Pretérito)",
+                        description: "Learn to talk about completed past actions",
+                        grammar: {
+                            title: "Pretérito Perfecto Simple",
+                            content: "The preterite tense describes completed actions in the past.",
+                            examples: [
+                                { spanish: "Ayer comí pizza", english: "Yesterday I ate pizza" },
+                                { spanish: "Ella habló con su madre", english: "She spoke with her mother" },
+                                { spanish: "Vivimos en Madrid por dos años", english: "We lived in Madrid for two years" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "fill-blank",
+                                question: "Yesterday I spoke: Ayer yo _____",
+                                answer: "hablé",
+                                audio: "Ayer yo hablé"
+                            },
+                            {
+                                type: "multiple-choice",
+                                question: "How do you say 'They lived'?",
+                                options: ["ellos vivieron", "ellos viven", "ellos vivir", "ellos vivían"],
+                                correct: 0,
+                                audio: "ellos vivieron"
+                            }
+                        ]
+                    },
+                    {
+                        id: "b1-2",
+                        title: "Travel & Directions",
+                        description: "Navigate and describe locations like a pro",
+                        grammar: {
+                            title: "Prepositions of Place",
+                            content: "Use prepositions to describe where things are located.",
+                            examples: [
+                                { spanish: "El hotel está cerca del aeropuerto", english: "The hotel is near the airport" },
+                                { spanish: "Gire a la derecha", english: "Turn right" },
+                                { spanish: "Está al lado del banco", english: "It's next to the bank" }
+                            ]
+                        },
+                        exercises: [
+                            {
+                                type: "vocabulary",
+                                question: "Match travel vocabulary:",
+                                pairs: [
+                                    { spanish: "aeropuerto", english: "airport" },
+                                    { spanish: "derecha", english: "right" },
+                                    { spanish: "cerca", english: "near" }
+                                ]
+                            },
+                            {
+                                type: "fill-blank",
+                                question: "Turn left: Gire a la _____",
+                                answer: "izquierda",
+                                audio: "Gire a la izquierda"
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // Progress tracking utilities
+        const getProgress = () => {
+            const saved = localStorage.getItem('spanish-progress');
+            return saved ? JSON.parse(saved) : {
+                completedLessons: [],
+                achievements: [],
+                currentLevel: 'A1',
+                scores: {}
+            };
+        };
+
+        const saveProgress = (progress) => {
+            localStorage.setItem('spanish-progress', JSON.stringify(progress));
+        };
+
+        // Dictionary API component
+        const ClickableWord = ({ word, children }) => {
+            const [definition, setDefinition] = useState(null);
+            const [position, setPosition] = useState({ x: 0, y: 0 });
+
+            const handleClick = async (e) => {
+                e.preventDefault();
+                const rect = e.target.getBoundingClientRect();
+                setPosition({ x: rect.left, y: rect.bottom + 5 });
+
+                try {
+                    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const meaning = data[0]?.meanings[0]?.definitions[0]?.definition;
+                        setDefinition(meaning || "Definition not found");
+                    }
+                } catch (error) {
+                    setDefinition("Unable to fetch definition");
+                }
+            };
+
+            const handleClose = () => {
+                setDefinition(null);
+            };
+
+            return (
+                <>
+                    <span className="clickable-word" onClick={handleClick}>
+                        {children || word}
+                    </span>
+                    {definition && (
+                        <>
+                            <div className="overlay" onClick={handleClose}></div>
+                            <div 
+                                className="word-definition" 
+                                style={{ left: position.x, top: position.y }}
+                            >
+                                <div className="definition-word">{word}</div>
+                                <div className="definition-text">{definition}</div>
+                            </div>
+                        </>
+                    )}
+                </>
+            );
+        };
+
+        // Audio component
+        const AudioButton = ({ text }) => {
+            const speak = () => {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'es-ES';
+                    speechSynthesis.speak(utterance);
+                }
+            };
+
+            return (
+                <button className="btn btn-audio" onClick={speak} title="Listen">
+                    🔊
+                </button>
+            );
+        };
+
+        // Exercise components
+        const MultipleChoice = ({ exercise, onAnswer }) => {
+            const [selected, setSelected] = useState(null);
+            const [showResult, setShowResult] = useState(false);
+
+            const handleSelect = (index) => {
+                if (showResult) return;
+                setSelected(index);
+            };
+
+            const handleSubmit = () => {
+                if (selected === null) return;
+                setShowResult(true);
+                const isCorrect = selected === exercise.correct;
+                setTimeout(() => onAnswer(isCorrect), 1500);
+            };
+
+            return (
+                <div className="question-card">
+                    <div className="question-text">
+                        {exercise.question}
+                        {exercise.audio && <AudioButton text={exercise.audio} />}
+                    </div>
+                    <div className="options-container">
+                        {exercise.options.map((option, index) => (
+                            <button
+                                key={index}
+                                className={`option-button ${
+                                    selected === index ? 'selected' : ''
+                                } ${
+                                    showResult
+                                        ? index === exercise.correct
+                                            ? 'correct'
+                                            : selected === index
+                                            ? 'incorrect'
+                                            : ''
+                                        : ''
+                                }`}
+                                onClick={() => handleSelect(index)}
+                            >
+                                <ClickableWord word={option}>{option}</ClickableWord>
+                            </button>
+                        ))}
+                    </div>
+                    {selected !== null && !showResult && (
+                        <div className="button-group">
+                            <button className="btn btn-primary" onClick={handleSubmit}>
+                                Submit Answer
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const FillBlank = ({ exercise, onAnswer }) => {
+            const [answer, setAnswer] = useState('');
+            const [showResult, setShowResult] = useState(false);
+            const [isCorrect, setIsCorrect] = useState(false);
+
+            const handleSubmit = () => {
+                const correct = answer.toLowerCase().trim() === exercise.answer.toLowerCase().trim();
+                setIsCorrect(correct);
+                setShowResult(true);
+                setTimeout(() => onAnswer(correct), 1500);
+            };
+
+            return (
+                <div className="question-card">
+                    <div className="question-text">
+                        {exercise.question}
+                        {exercise.audio && <AudioButton text={exercise.audio} />}
+                    </div>
+                    <input
+                        type="text"
+                        className="input-field"
+                        value={answer}
+                        onChange={(e) => setAnswer(e.target.value)}
+                        placeholder="Type your answer..."
+                        disabled={showResult}
+                    />
+                    {showResult && (
+                        <div style={{ 
+                            color: isCorrect ? '#4caf50' : '#f44336',
+                            fontWeight: 'bold',
+                            marginBottom: '10px'
+                        }}>
+                            {isCorrect ? '✓ Correct!' : `✗ Incorrect. The answer is: ${exercise.answer}`}
+                        </div>
+                    )}
+                    {!showResult && (
+                        <div className="button-group">
+                            <button 
+                                className="btn btn-primary" 
+                                onClick={handleSubmit}
+                                disabled={!answer.trim()}
+                            >
+                                Submit Answer
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const VocabularyMatch = ({ exercise, onAnswer }) => {
+            const [matches, setMatches] = useState({});
+            const [showResult, setShowResult] = useState(false);
+
+            const handleMatch = (spanish, english) => {
+                if (showResult) return;
+                setMatches(prev => ({ ...prev, [spanish]: english }));
+            };
+
+            const handleSubmit = () => {
+                const correctMatches = exercise.pairs.filter(pair => 
+                    matches[pair.spanish] === pair.english
+                ).length;
+                const isCorrect = correctMatches === exercise.pairs.length;
+                setShowResult(true);
+                setTimeout(() => onAnswer(isCorrect), 1500);
+            };
+
+            const allMatched = Object.keys(matches).length === exercise.pairs.length;
+
+            return (
+                <div className="question-card">
+                    <div className="question-text">{exercise.question}</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                        <div>
+                            <h4>Spanish</h4>
+                            {exercise.pairs.map(pair => (
+                                <div key={pair.spanish} style={{ 
+                                    padding: '10px', 
+                                    margin: '5px 0', 
+                                    background: matches[pair.spanish] ? '#e8f5e8' : '#f0f0f0',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer'
+                                }}>
+                                    <ClickableWord word={pair.spanish}>{pair.spanish}</ClickableWord>
+                                </div>
+                            ))}
+                        </div>
+                        <div>
+                            <h4>English</h4>
+                            {exercise.pairs.map(pair => (
+                                <div 
+                                    key={pair.english} 
+                                    style={{ 
+                                        padding: '10px', 
+                                        margin: '5px 0', 
+                                        background: Object.values(matches).includes(pair.english) ? '#e8f5e8' : '#f0f0f0',
+                                        borderRadius: '5px',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() => {
+                                        const spanish = exercise.pairs.find(p => p.english === pair.english)?.spanish;
+                                        if (spanish) handleMatch(spanish, pair.english);
+                                    }}
+                                >
+                                    {pair.english}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    {showResult && (
+                        <div style={{ 
+                            color: Object.keys(matches).length === exercise.pairs.length ? '#4caf50' : '#f44336',
+                            fontWeight: 'bold',
+                            marginBottom: '10px'
+                        }}>
+                            {Object.keys(matches).length === exercise.pairs.length ? '✓ All correct!' : '✗ Some matches are incorrect'}
+                        </div>
+                    )}
+                    {allMatched && !showResult && (
+                        <div className="button-group">
+                            <button className="btn btn-primary" onClick={handleSubmit}>
+                                Submit Answers
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // Main components
+        const LessonView = ({ level, lessonId, onComplete, onBack }) => {
+            const lesson = lessonData[level].lessons.find(l => l.id === lessonId);
+            const [currentExercise, setCurrentExercise] = useState(0);
+            const [score, setScore] = useState(0);
+            const [showGrammar, setShowGrammar] = useState(true);
+
+            if (!lesson) return <div>Lesson not found</div>;
+
+            const handleAnswer = (correct) => {
+                if (correct) setScore(score + 1);
+                
+                if (currentExercise < lesson.exercises.length - 1) {
+                    setTimeout(() => {
+                        setCurrentExercise(currentExercise + 1);
+                    }, 500);
+                } else {
+                    setTimeout(() => {
+                        const finalScore = correct ? score + 1 : score;
+                        const percentage = Math.round((finalScore / lesson.exercises.length) * 100);
+                        onComplete(lessonId, percentage);
+                    }, 500);
+                }
+            };
+
+            if (showGrammar) {
+                return (
+                    <div className="exercise-container">
+                        <div className="exercise-header">
+                            <h2 className="exercise-title">{lesson.title}</h2>
+                            <p>{lesson.description}</p>
+                        </div>
+                        
+                        <div className="grammar-section">
+                            <h3 className="grammar-title">{lesson.grammar.title}</h3>
+                            <div className="grammar-content">
+                                <p>{lesson.grammar.content}</p>
+                                {lesson.grammar.examples.map((example, index) => (
+                                    <div key={index} className="example-box">
+                                        <strong>
+                                            <ClickableWord word={example.spanish.split(' ')[0]}>
+                                                {example.spanish}
+                                            </ClickableWord>
+                                        </strong>
+                                        <AudioButton text={example.spanish} />
+                                        <br />
+                                        <em>{example.english}</em>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="button-group">
+                            <button className="btn btn-secondary" onClick={onBack}>
+                                Back to Lessons
+                            </button>
+                            <button className="btn btn-primary" onClick={() => setShowGrammar(false)}>
+                                Start Exercises
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            const exercise = lesson.exercises[currentExercise];
+
+            return (
+                <div className="exercise-container">
+                    <div className="exercise-header">
+                        <h2 className="exercise-title">{lesson.title}</h2>
+                        <div className="exercise-progress">
+                            Exercise {currentExercise + 1} of {lesson.exercises.length}
+                        </div>
+                        <div className="progress-bar">
+                            <div 
+                                className="progress-fill" 
+                                style={{ width: `${((currentExercise + 1) / lesson.exercises.length) * 100}%` }}
+                            ></div>
+                        </div>
+                    </div>
+
+                    {exercise.type === 'multiple-choice' && (
+                        <MultipleChoice exercise={exercise} onAnswer={handleAnswer} />
+                    )}
+                    {exercise.type === 'fill-blank' && (
+                        <FillBlank exercise={exercise} onAnswer={handleAnswer} />
+                    )}
+                    {exercise.type === 'vocabulary' && (
+                        <VocabularyMatch exercise={exercise} onAnswer={handleAnswer} />
+                    )}
+
+                    <div className="button-group">
+                        <button className="btn btn-secondary" onClick={() => setShowGrammar(true)}>
+                            Review Grammar
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const LevelOverview = ({ level, onStartLesson, onStartTest }) => {
+            const progress = getProgress();
+            const levelData = lessonData[level];
+            const completedLessons = progress.completedLessons.filter(id => id.startsWith(level.toLowerCase()));
+            const progressPercentage = Math.round((completedLessons.length / levelData.lessons.length) * 100);
+
+            return (
+                <div className="level-overview">
+                    <h2 className="level-title">{levelData.title}</h2>
+                    <p className="level-description">{levelData.description}</p>
+                    
+                    <div className="progress-bar">
+                        <div 
+                            className="progress-fill" 
+                            style={{ width: `${progressPercentage}%` }}
+                        ></div>
+                    </div>
+                    <p>Progress: {progressPercentage}%</p>
+
+                    <div className="lesson-grid">
+                        {levelData.lessons.map((lesson, index) => {
+                            const isCompleted = completedLessons.includes(lesson.id);
+                            const isUnlocked = index === 0 || completedLessons.includes(levelData.lessons[index - 1]?.id);
+                            const isCurrent = isUnlocked && !isCompleted;
+
+                            return (
+                                <div
+                                    key={lesson.id}
+                                    className={`lesson-card ${isCompleted ? 'completed' : isCurrent ? 'current' : ''}`}
+                                    onClick={() => isUnlocked && onStartLesson(lesson.id)}
+                                    style={{ opacity: isUnlocked ? 1 : 0.6, cursor: isUnlocked ? 'pointer' : 'not-allowed' }}
+                                >
+                                    <div className="lesson-title">{lesson.title}</div>
+                                    <div className="lesson-description">{lesson.description}</div>
+                                    <div className="lesson-status">
+                                        <div className={`status-icon ${isCompleted ? 'completed' : isCurrent ? 'current' : 'locked'}`}></div>
+                                        <span>
+                                            {isCompleted ? 'Completed' : isCurrent ? 'Available' : 'Locked'}
+                                        </span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {progressPercentage === 100 && (
+                        <div style={{ marginTop: '30px' }}>
+                            <button className="btn btn-primary" onClick={() => onStartTest(level)}>
+                                Take {level} Level Test
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const Achievement = ({ achievement, onClose }) => {
+            if (!achievement) return null;
+
+            return (
+                <>
+                    <div className="overlay" onClick={onClose}></div>
+                    <div className="achievement-popup">
+                        <div className="achievement-icon">🏆</div>
+                        <h3 className="achievement-title">{achievement.title}</h3>
+                        <p>{achievement.description}</p>
+                        <button className="btn btn-primary" onClick={onClose}>
+                            Continue
+                        </button>
+                    </div>
+                </>
+            );
+        };
+
+        const App = () => {
+            const [currentView, setCurrentView] = useState('A1');
+            const [currentLesson, setCurrentLesson] = useState(null);
+            const [showAchievement, setShowAchievement] = useState(null);
+            const [progress, setProgress] = useState(getProgress());
+
+            useEffect(() => {
+                setProgress(getProgress());
+            }, []);
+
+            const handleLessonComplete = (lessonId, score) => {
+                const newProgress = { ...progress };
+                
+                if (!newProgress.completedLessons.includes(lessonId)) {
+                    newProgress.completedLessons.push(lessonId);
+                }
+                
+                newProgress.scores[lessonId] = score;
+                
+                // Check for achievements
+                const completedCount = newProgress.completedLessons.length;
+                if (completedCount === 1 && !newProgress.achievements.includes('first-lesson')) {
+                    newProgress.achievements.push('first-lesson');
+                    setShowAchievement({
+                        title: 'First Steps!',
+                        description: 'You completed your first lesson!'
+                    });
+                } else if (completedCount === 5 && !newProgress.achievements.includes('persistent')) {
+                    newProgress.achievements.push('persistent');
+                    setShowAchievement({
+                        title: 'Persistent Learner',
+                        description: 'You completed 5 lessons!'
+                    });
+                }
+
+                setProgress(newProgress);
+                saveProgress(newProgress);
+                setCurrentLesson(null);
+            };
+
+            const handleStartLesson = (lessonId) => {
+                setCurrentLesson(lessonId);
+            };
+
+            const handleBackToLessons = () => {
+                setCurrentLesson(null);
+            };
+
+            const handleStartTest = (level) => {
+                alert(`${level} Level Test coming soon! You've mastered all the lessons in this level.`);
+            };
+
+            if (currentLesson) {
+                return (
+                    <div className="app">
+                        <LessonView
+                            level={currentView}
+                            lessonId={currentLesson}
+                            onComplete={handleLessonComplete}
+                            onBack={handleBackToLessons}
+                        />
+                        {showAchievement && (
+                            <Achievement
+                                achievement={showAchievement}
+                                onClose={() => setShowAchievement(null)}
+                            />
+                        )}
+                    </div>
+                );
+            }
+
+            return (
+                <div className="app">
+                    <div className="header">
+                        <h1>Spanish Learning App</h1>
+                        <p>Master Spanish from A1 to B1 level with interactive lessons</p>
+                    </div>
+
+                    <div className="nav-tabs">
+                        {Object.keys(lessonData).map(level => (
+                            <button
+                                key={level}
+                                className={`nav-tab ${currentView === level ? 'active' : ''}`}
+                                onClick={() => setCurrentView(level)}
+                            >
+                                {lessonData[level].title}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="content">
+                        <LevelOverview
+                            level={currentView}
+                            onStartLesson={handleStartLesson}
+                            onStartTest={handleStartTest}
+                        />
+                    </div>
+
+                    {showAchievement && (
+                        <Achievement
+                            achievement={showAchievement}
+                            onClose={() => setShowAchievement(null)}
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
